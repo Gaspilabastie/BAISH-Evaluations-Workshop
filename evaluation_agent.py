@@ -21,7 +21,7 @@ from quirky_prompts import QUIRKS, BASELINE_PROMPT
 class SimpleEvaluationAgent:
     def __init__(self):
         # TODO: Initialize your model wrapper
-        pass
+        self.model_waper = ModelWrapper()
         
     def generate_test_prompts(self, quirk_name, num_prompts=5):
         """
@@ -35,7 +35,10 @@ class SimpleEvaluationAgent:
         
         # TODO: Create a list of good test prompts
         # Hint: You might want both generic and quirk-specific prompts
-        pass
+        prompts = []
+        for i in range(num_prompts):
+            prompts.append(random.choice(base_promts))
+        return prompts
     
     def detect_quirk(self, responses, quirk_name):
         """

@@ -18,28 +18,56 @@ class ModelWrapper:
         # "qwen/qwen-2-7b-instruct" - Free!
         # "meta-llama/llama-3-8b-instruct" - Meta
         
-        pass
-    
-    def query_model(self, prompt, system_prompt="You are a helpful assistant", model="gpt-4"):
+        api_key = os.getenv("OPENROUTER_API_KEY")
+
+        self.client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+        self.models = ["openai/gpt-4o-mini",
+                       "anthropic/claude-3-haiku",
+                       "google/gemini-flash-1.5",
+                       "qwen/qwen-2-7b-instruct"]
+
+    def query_model(self, prompt, system_prompt="You are a helpful assistant, think step by step and then answer the request", model="openai/gpt-4o-mini"):
         """
         Send a prompt to any AI model and get back a response
-        
+           
         Think about:
-        - How do you make an API call?
-        - What parameters do you need?
-        - What happens when things go wrong?
-        - How do you keep responses short for the workshop?
+            - How do you make an API call?
+            - What parameters do you need?
+            - What happens when things go wrong?
+            - How do you keep responses short for the workshop?
         """
         # TODO: Implement the API call
         # Hint: Use self.client.chat.completions.create()
-        pass
-    
+        try:
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt}
+                ]
+
+            response = self.client.chat.completions.create(
+                model = model,
+                messages = messages,
+                max_tokens = 50
+            )
+
+            return response.choices[0].message.content
+        except Exception as e:
+            return f"Error: {e}"
+        
     def get_available_models(self):
         """Return a list of model names students can use"""
         # TODO: Return list of your available models
-        pass
-    
+        return self.models
+        
     def test_connection(self):
         """Quick test to see if your setup works"""
         # TODO: Try a simple API call and return True/False
-        pass
+        return self.client is not None
+
+m = ModelWrapper()
+print("Cliente inicializado: ", m.test_connection())
+print("Modelos disponibles: ", m.get_available_models(), "\n\n")
+
+
+respuesta = m.query_model("Hola, me podrias decir cuanto es la raiz de 2 aproximadamente?")
+print(respuesta)
