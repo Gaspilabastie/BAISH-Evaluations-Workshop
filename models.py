@@ -64,10 +64,12 @@ class ModelWrapper:
         # TODO: Try a simple API call and return True/False
         return self.client is not None
 
-m = ModelWrapper()
-print("Cliente inicializado: ", m.test_connection())
-print("Modelos disponibles: ", m.get_available_models(), "\n\n")
+def test_models():
+    m = ModelWrapper()
+    print("Cliente inicializado: ", m.test_connection())
+    print("Modelos disponibles: ", m.get_available_models(), "\n")
 
+    respuesta = m.query_model("Hola, me podrias decir cuanto es la raiz de 2 aproximadamente?")
+    print(respuesta)
 
-respuesta = m.query_model("Hola, me podrias decir cuanto es la raiz de 2 aproximadamente?")
-print(respuesta)
+test_models()
