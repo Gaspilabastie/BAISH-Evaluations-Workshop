@@ -1,6 +1,7 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+from pprint import pprint
 
 load_dotenv()
 
@@ -23,8 +24,8 @@ class ModelWrapper:
         self.client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
         self.models = ["openai/gpt-4o-mini",
                        "anthropic/claude-3-haiku",
-                       "google/gemini-flash-1.5",
-                       "qwen/qwen-2-7b-instruct"]
+                       "google/gemini-2.0-flash-001",
+                       "x-ai/grok-4-fast:free"]
 
     def query_model(self, prompt, system_prompt="You are a helpful assistant, think step by step and then answer the request", model="openai/gpt-4o-mini"):
         """
@@ -47,7 +48,7 @@ class ModelWrapper:
             response = self.client.chat.completions.create(
                 model = model,
                 messages = messages,
-                max_tokens = 50
+                max_tokens = 500
             )
 
             return response.choices[0].message.content
@@ -72,4 +73,18 @@ def test_models():
     respuesta = m.query_model("Hola, me podrias decir cuanto es la raiz de 2 aproximadamente?")
     print(respuesta)
 
-test_models()
+def test_all_models():
+    m = ModelWrapper()
+    print("Cliente inicializado: ", m.test_connection())
+    print("Modelos disponibles: ", m.get_available_models(), "\n")
+
+    all_respuestas = {}
+    prompt = "Hola, me podrias decir cuanto es la raiz de 2 aproximadamente?"
+    for model in m.models:
+        respuesta = m.query_model(prompt=prompt, model=model)
+        all_respuestas[model]=respuesta
+    pprint(all_respuestas)
+
+
+#test_models()
+#test_all_models()
